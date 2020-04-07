@@ -39,13 +39,13 @@
       <hr class="sidebar-divider my-0">
 
       <!-- Nav Item - Dashboard -->
-      <li class="nav-item active">
+      <li class="nav-item">
         <a class="nav-link" href="{{ route('admin.dashboard') }}">
           <i class="fas fa-cart-plus"></i>
           <span>Order</span></a>
       </li>
       <hr class="sidebar-divider my-0">
-      <li class="nav-item">
+      <li class="nav-item active">
         <a class="nav-link" href="{{ route('admin.item') }}">
           <i class="fas fa-sitemap"></i>
           <span>Item</span></a>
@@ -134,41 +134,48 @@
           
           <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h6 class="m-0 font-weight-bold text-primary">Oders</h6>
+              <h6 class="m-0 font-weight-bold text-primary">List Item</h6>
+              <a href="#" data-toggle="modal" data-target="#logoutModal" class="btn btn-primary btn-circle btn-lg float-right">
+                    <i class="fas fa-plus"></i>
+                  </a>
             </div>
             <div class="card-body">
               <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                   <thead>
                     <tr>
-                      <th>Order Id</th>
-                      <th>Product Id</th>
-                      <th>Amount</th>
+                      <th>Id</th>
+                      <th>Engine Name</th>
+                      <th>Dimension</th>
+                      <th>Output</th>
                       <th>Price</th>
-                      <th>Date</th>
-                      <th>Status</th>
                       <th>Action</th>
                     </tr>
                   </thead>
                   <tfoot>
                     <tr>
-                      <th>Order Id</th>
-                      <th>Product Id</th>
-                      <th>Amount</th>
+                      <th>Id</th>
+                      <th>Engine Name</th>
+                      <th>Dimension</th>
+                      <th>Output</th>
                       <th>Price</th>
-                      <th>Date</th>
-                      <th>Status</th>
                       <th>Action</th>
                     </tr>
                   </tfoot>
                   <tbody>
+                    @foreach($data as $dt)
                     <tr>
-                      <td>1</td>
-                      <td>Lbr_01</td>
-                      <td>3</td>
-                      <td>61.000</td>
-                      <td>2011/04/25</td>
-                      <td>Waiting</td>
+                      <td>
+                        @if($dt->id<=10)
+                          Lbr_0{{ $dt->id }}
+                        @else
+                          Lbr_{{ $dt->id }}
+                        @endif
+                      </td>
+                      <td>{{ $dt->name }}</td>
+                      <td>{{ $dt->dimension }}</td>
+                      <td>{{ $dt->output }}</td>
+                      <td>{{ $dt->price }}</td>
                       <td><button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       Dropdown
                     </button>
@@ -179,6 +186,7 @@
                     </div>
                   </td>
                     </tr>
+                    @endforeach
                     
                   </tbody>
                 </table>
@@ -218,15 +226,32 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+          <h5 class="modal-title" id="exampleModalLabel">Add New Item</h5>
           <button class="close" type="button" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">×</span>
           </button>
         </div>
-        <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+        <div class="modal-body">
+          <form action="{{ route('admin.add.item') }}" method="post">
+            @csrf
+            
+            <div class="form-group">
+              <input name="name" type="text" class="form-control" placeholder="Engine Name">
+            </div>
+            <div class="form-group">
+              <input name="dimension" type="text" class="form-control" placeholder="Dimension">
+            </div>
+            <div class="form-group">
+              <input name="output" type="text" class="form-control" placeholder="Output">
+            </div>
+            <div class="form-group">
+              <input name="price" type="text" class="form-control" placeholder="Price">
+            </div>
+        </div>
         <div class="modal-footer">
           <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-          <a class="btn btn-primary" href="login.html">Logout</a>
+          <button class="btn btn-primary" type="submit">Add</button>
+          </form>
         </div>
       </div>
     </div>

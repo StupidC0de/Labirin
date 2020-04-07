@@ -39,7 +39,7 @@
       <hr class="sidebar-divider my-0">
 
       <!-- Nav Item - Dashboard -->
-      <li class="nav-item active">
+      <li class="nav-item">
         <a class="nav-link" href="{{ route('admin.dashboard') }}">
           <i class="fas fa-cart-plus"></i>
           <span>Order</span></a>
@@ -51,7 +51,7 @@
           <span>Item</span></a>
       </li>
       <hr class="sidebar-divider my-0">
-      <li class="nav-item">
+      <li class="nav-item active">
         <a class="nav-link" href="{{ route('admin.history') }}">
           <i class="fas fa-history"></i>
           <span>History Order</span></a>
@@ -134,7 +134,7 @@
           
           <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h6 class="m-0 font-weight-bold text-primary">Oders</h6>
+              <h6 class="m-0 font-weight-bold text-primary">History</h6>
             </div>
             <div class="card-body">
               <div class="table-responsive">

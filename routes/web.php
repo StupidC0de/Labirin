@@ -20,9 +20,17 @@ Route::get('/login', 'LoginController@getLogin')->middleware('guest');
 Route::post('/regis', 'LoginController@register');
 Route::get('/logout', 'LoginController@logout');
 
-Route::get('/admin', function() {
-  return view('admin.dashboard');
-})->middleware('auth:admin');
+Route::prefix('admin')->group(function () {
+	Route::get('/', 'AdminController@index')->name('admin.dashboard')
+	->middleware('auth:admin');
+	Route::get('item', 'AdminController@item')->name('admin.item')
+	->middleware('auth:admin');
+	Route::post('item', 'AdminActionController@additem')->name('admin.add.item')
+	->middleware('auth:admin');
+	Route::get('history', 'AdminController@history')->name('admin.history')
+	->middleware('auth:admin');
+
+});
 
 Route::get('/dashboard', function() {
   return view('cust.dashboard');
