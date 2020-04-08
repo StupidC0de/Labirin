@@ -25,8 +25,8 @@ class CreateOrdersTable extends Migration
             ->onUpdate('cascade');
             $table->string('amount');
             $table->string('price');
-            $table->string('date');
-            $table->integer('status');
+            $table->date('date');
+            $table->string('status');
             $table->timestamps();
         });
     }

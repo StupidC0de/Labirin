@@ -29,12 +29,32 @@ Route::prefix('admin')->group(function () {
 	->middleware('auth:admin');
 	Route::get('history', 'AdminController@history')->name('admin.history')
 	->middleware('auth:admin');
+	Route::post('get_dataitem', 'AdminController@get_dataitem')->name('admin.get_dataitem')
+	->middleware('auth:admin');
+	Route::get('acc/{id}', 'AdminActionController@acc')->name('admin.acc')
+	->middleware('auth:admin');
+	Route::get('rjc/{id}', 'AdminActionController@rjc')->name('admin.rjc')
+	->middleware('auth:admin');
+	Route::post('edit/{id}', 'AdminActionController@edit')->name('admin.edit.item')
+	->middleware('auth:admin');
+	Route::get('delete/{id}', 'AdminActionController@delete')->name('admin.delete.item')
+	->middleware('auth:admin');
 
 });
 
-Route::get('/dashboard', function() {
-  return view('cust.dashboard');
-})->middleware('auth:customer');
+Route::prefix('dashboard')->group(function () {
+	Route::get('/', 'CustomerController@index')->name('cust.dashboard')
+	->middleware('auth:customer');
+	Route::post('/', 'CustomerActionController@buy')->name('cust.buy')
+	->middleware('auth:customer');
+	Route::get('/history', 'CustomerController@history')->name('cust.history')
+	->middleware('auth:customer');
+	Route::get('history/{id}', 'CustomerActionController@cancel')->name('cust.cancel')
+	->middleware('auth:customer');
+
+
+
+});
 
 
 

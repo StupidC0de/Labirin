@@ -9,7 +9,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>LABIRIN Admin</title>
+  <title>LABIRIN History</title>
 
   <!-- Custom fonts for this template-->
   <link href="{{ asset('vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
@@ -32,7 +32,7 @@
       <!-- Sidebar - Brand -->
       <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#">
         
-        <div class="sidebar-brand-text mx-3">LABIRIN Admin</div>
+        <div class="sidebar-brand-text mx-3">LABIRIN</div>
       </a>
 
       <!-- Divider -->
@@ -40,19 +40,13 @@
 
       <!-- Nav Item - Dashboard -->
       <li class="nav-item">
-        <a class="nav-link" href="{{ route('admin.dashboard') }}">
+        <a class="nav-link" href="{{ route('cust.dashboard') }}">
           <i class="fas fa-cart-plus"></i>
-          <span>Order</span></a>
-      </li>
-      <hr class="sidebar-divider my-0">
-      <li class="nav-item active">
-        <a class="nav-link" href="{{ route('admin.item') }}">
-          <i class="fas fa-sitemap"></i>
           <span>Item</span></a>
       </li>
       <hr class="sidebar-divider my-0">
-      <li class="nav-item">
-        <a class="nav-link" href="{{ route('admin.history') }}">
+      <li class="nav-item active">
+        <a class="nav-link" href="{{ route('cust.history') }}">
           <i class="fas fa-history"></i>
           <span>History Order</span></a>
       </li>
@@ -103,7 +97,7 @@
             <!-- Nav Item - User Information -->
             <li class="nav-item dropdown no-arrow">
               <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ Auth::guard('admin')->user()->name }}</span>
+                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ Auth::guard('customer')->user()->name }}</span>
                 <i class="fas fa-user"></i>
               </a>
               <!-- Dropdown - User Information -->
@@ -134,66 +128,70 @@
           
           <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h6 class="m-0 font-weight-bold text-primary">List Item</h6>
-              <a href="#" data-toggle="modal" data-target="#logoutModal" class="btn btn-primary btn-circle btn-lg float-right">
+              <h6 class="m-0 font-weight-bold text-primary">History</h6>
+              {{-- <a href="#" data-toggle="modal" data-target="#logoutModal" class="btn btn-primary btn-circle btn-lg float-right">
                     <i class="fas fa-plus"></i>
-                  </a>
+                  </a> --}}
             </div>
             <div class="card-body">
               <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                   <thead>
                     <tr>
-                      <th>Id</th>
-                      <th>Engine Name</th>
-                      <th>Dimension</th>
-                      <th>Output</th>
+                      <th>Order Id</th>
+                      <th>Product Id</th>
+                      <th>Amount</th>
                       <th>Price</th>
+                      <th>Date</th>
+                      <th>Status</th>
                       <th>Action</th>
                     </tr>
                   </thead>
                   <tfoot>
                     <tr>
-                      <th>Id</th>
-                      <th>Engine Name</th>
-                      <th>Dimension</th>
-                      <th>Output</th>
+                      <th>Order Id</th>
+                      <th>Product Id</th>
+                      <th>Amount</th>
                       <th>Price</th>
+                      <th>Date</th>
+                      <th>Status</th>
                       <th>Action</th>
                     </tr>
                   </tfoot>
                   <tbody>
                     @foreach($data as $dt)
                     <tr>
+                      <td>{{ $dt->id }}</td>
                       <td>
-                        @if($dt->id<=10)
-                          Lbr_0{{ $dt->id }}
+                        @if($dt->id_item<=10)
+                          Lbr_0{{ $dt->id_item }}
                         @else
-                          Lbr_{{ $dt->id }}
+                          Lbr_{{ $dt->id_item }}
                         @endif
                       </td>
-                      <td>{{ $dt->name }}</td>
-                      <td>{{ $dt->dimension }}</td>
-                      <td>{{ $dt->output }}</td>
+                      <td>{{ $dt->amount }}</td>
                       <td>
-                      @php
-                        echo number_format($dt->price);
-                      @endphp
+                        @php
+                          echo number_format($dt->price);
+                        @endphp
                       </td>
                       <td>
-                      <button data-toggle="modal" data-target="#edit{{ $dt->id }}" class="btn btn-warning btn-icon-split">
-                          <span class="icon text-white-50">
-                            <i class="fas fa-exclamation-triangle"></i>
-                          </span>
-                          <span class="text">Edit</span>
-                        </button>
-                        <a href="{{ route('admin.delete.item',$dt->id) }}" class="btn btn-danger btn-icon-split">
-                          <span class="icon text-white-50">
-                            <i class="fas fa-trash"></i>
-                            
-                          </span>
-                          <span class="text">Delete</span>
-                        </a>
+                        @php
+                      $date=date_create($dt->date);
+                      echo date_format($date,"d/m/Y");
+                      
+                      @endphp
+                      </td>
+                      <td>{{ $dt->status }}</td>
+                      <td>
+                        @if($dt->status=="Waiting")
+                        <a href="{{ route('cust.cancel',$dt->id) }}" class="btn btn-danger btn-icon-split">
+                    <span class="icon text-white-50">
+                      <i class="fas fa-trash"></i>
+                    </span>
+                    <span class="text">cancel</span>
+                  </a>
+                  @endif
                       </td>
                     </tr>
                     @endforeach
@@ -232,80 +230,65 @@
   </a>
 
   <!-- Logout Modal-->
-  <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  @foreach($data as $dt)
+  <div class="modal fade" id="logoutModal{{ $dt->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Add New Item</h5>
+          <h5 class="modal-title" id="exampleModalLabel">Buy Item</h5>
           <button class="close" type="button" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">×</span>
           </button>
         </div>
         <div class="modal-body">
-          <form action="{{ route('admin.add.item') }}" method="post">
+          <form action="{{ route('cust.buy') }}" method="post">
             @csrf
             
             <div class="form-group">
-              <input name="name" type="text" class="form-control" placeholder="Engine Name">
+              <input name="name" type="text" class="form-control" value="{{ $dt->name }}" placeholder="Engine Name" readonly="">
             </div>
-            <div class="form-group">
-              <input name="dimension" type="text" class="form-control" placeholder="Dimension">
+            <div class="row">
+            <div class="form-group" style="padding-left: 12px;">
+              <input name="val1" id="val1" type="number" class="form-control" value="{{ $dt->price }}" hidden>
+              <input name="amount" id="val2" type="number" class="form-control" placeholder="Amount">
+              <input name="iditem" type="number" class="form-control" value="{{ $dt->id }}" hidden="">
+              <input name="idcust" type="number" class="form-control" value="{{ Auth::guard('customer')->user()->id }}" hidden="">
             </div>
-            <div class="form-group">
-              <input name="output" type="text" class="form-control" placeholder="Output">
+            <div class="form-group" style="padding-left: 54px;">
+              <input name="price" id="sum" type="number" class="form-control" placeholder="Price" readonly="">
             </div>
-            <div class="form-group">
-              <input name="price" type="text" class="form-control" placeholder="Price">
             </div>
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-          <button class="btn btn-primary" type="submit">Add</button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
+             <div class="form-group">
+              <input name="date" type="date" class="form-control">
 
-  @foreach ($data as $dt)
-    <div class="modal fade" id="edit{{ $dt->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Edit Item</h5>
-          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">×</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <form action="{{ route('admin.edit.item',$dt->id) }}" method="post">
-            @csrf
+            </div>
             
-            <div class="form-group">
-              <input name="name" type="text" class="form-control" value="{{ $dt->name }}">
-            </div>
-            <div class="form-group">
-              <input name="dimension" type="text" class="form-control" value="{{ $dt->dimension }}">
-            </div>
-            <div class="form-group">
-              <input name="output" type="text" class="form-control" value="{{ $dt->output }}">
-            </div>
-            <div class="form-group">
-              <input name="price" type="text" class="form-control" value="{{ $dt->price }}">
-            </div>
         </div>
         <div class="modal-footer">
           <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-          <button class="btn btn-primary" type="submit">Edit</button>
+          <button class="btn btn-primary" type="submit">Buy</button>
           </form>
         </div>
       </div>
     </div>
   </div>
   @endforeach
+  <script
+  src="https://code.jquery.com/jquery-3.4.1.js"
+  integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+  crossorigin="anonymous"></script>
+  <script>
+    $(function(){
+            $('#val1, #val2').keyup(function(){
+               var val1 = parseFloat($('#val1').val()) || 0;
+               var val2 = parseFloat($('#val2').val()) || 0;
+               $('#sum').val(val1 * val2);
+            });
+         });
+  </script>
 
   <!-- Bootstrap core JavaScript-->
-  <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
+ <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
   <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
   <!-- Core plugin JavaScript-->
@@ -318,7 +301,7 @@
 
   <!-- Page level custom scripts -->
   <script src="{{ asset('js/demo/datatables-demo.js') }}"></script>
-
+@include('sweetalert::alert')
 </body>
 
 </html>

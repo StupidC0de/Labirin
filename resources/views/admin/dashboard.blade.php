@@ -162,23 +162,47 @@
                     </tr>
                   </tfoot>
                   <tbody>
+                    @foreach($data as $dt)
                     <tr>
-                      <td>1</td>
-                      <td>Lbr_01</td>
-                      <td>3</td>
-                      <td>61.000</td>
-                      <td>2011/04/25</td>
-                      <td>Waiting</td>
-                      <td><button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      Dropdown
-                    </button>
-                    <div class="dropdown-menu animated--fade-in" aria-labelledby="dropdownMenuButton">
-                      <a class="dropdown-item" href="#">Accept</a>
-                      <a class="dropdown-item" href="#">Decline</a>
-                      
-                    </div>
-                  </td>
+                      <td>{{ $dt->id }}</td>
+                      <td>
+                        @if($dt->id_item<=10)
+                          Lbr_0{{ $dt->id_item }}
+                        @else
+                          Lbr_{{ $dt->id_item }}
+                        @endif
+                      </td>
+                      <td>{{ $dt->amount }}</td>
+                      <td>
+                        @php
+                          echo number_format($dt->price);
+                        @endphp
+                      </td>
+                      <td>@php
+                      $date=date_create($dt->date);
+                      echo date_format($date,"d/m/Y");
+                      // $datefor = $dt->date;
+                      // echo $datefor;
+                        //echo date_format($datefor,"d/m/Y");
+
+                      @endphp </td>
+                      <td>{{ $dt->status }}</td>
+                      <td>
+                        <button data-toggle="modal" data-target="#acc{{ $dt->id }}" class="btn btn-success btn-icon-split">
+                          <span class="icon text-white-50">
+                            <i class="fas fa-check"></i>
+                          </span>
+                          <span class="text">Accept</span>
+                        </button>
+                        <button data-toggle="modal" data-target="#rjc{{ $dt->id }}" class="btn btn-warning btn-icon-split">
+                          <span class="icon text-white-50">
+                            <i class="fas fa-exclamation-triangle"></i>
+                          </span>
+                          <span class="text">Reject</span>
+                        </button>
+                      </td>
                     </tr>
+                    @endforeach
                     
                   </tbody>
                 </table>
@@ -214,24 +238,43 @@
   </a>
 
   <!-- Logout Modal-->
-  <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  @foreach($data as $dt)
+  <div class="modal fade" id="acc{{ $dt->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+          <h5 class="modal-title" id="exampleModalLabel">Are You Sure?</h5>
           <button class="close" type="button" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">×</span>
           </button>
         </div>
-        <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+        <div class="modal-body">{{ $dt->id }}Select "Accept" below if you want to Accept this Order.</div>
         <div class="modal-footer">
           <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-          <a class="btn btn-primary" href="login.html">Logout</a>
+          <a class="btn btn-success" href="{{ route('admin.acc',$dt->id) }}">Accept</a>
         </div>
       </div>
     </div>
   </div>
 
+  <div class="modal fade" id="rjc{{ $dt->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Are You Sure?</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">{{ $dt->id }}Select "Reject" below if you want to Reject this Order.</div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+          <a class="btn btn-warning" href="{{ route('admin.rjc',$dt->id) }}">Reject</a>
+        </div>
+      </div>
+    </div>
+  </div>
+@endforeach
   <!-- Bootstrap core JavaScript-->
   <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
   <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>

@@ -17,6 +17,7 @@
 
   <!-- Custom styles for this template-->
   <link href="{{ asset('css/sb-admin-2.min.css') }}" rel="stylesheet">
+  <link href="{{ asset('vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
 
 </head>
 
@@ -38,14 +39,14 @@
       <hr class="sidebar-divider my-0">
 
       <!-- Nav Item - Dashboard -->
-      <li class="nav-item">
-        <a class="nav-link" href="">
+      <li class="nav-item active">
+        <a class="nav-link" href="{{ route('cust.dashboard') }}">
           <i class="fas fa-cart-plus"></i>
           <span>Item</span></a>
       </li>
       <hr class="sidebar-divider my-0">
       <li class="nav-item">
-        <a class="nav-link" href="">
+        <a class="nav-link" href="{{ route('cust.history') }}">
           <i class="fas fa-history"></i>
           <span>History Order</span></a>
       </li>
@@ -124,7 +125,65 @@
         <div class="container-fluid">
 
           <!-- Page Heading -->
-          <h1 class="h3 mb-4 text-gray-800">List Item</h1>
+          
+          <div class="card shadow mb-4">
+            <div class="card-header py-3">
+              <h6 class="m-0 font-weight-bold text-primary">List Item</h6>
+              {{-- <a href="#" data-toggle="modal" data-target="#logoutModal" class="btn btn-primary btn-circle btn-lg float-right">
+                    <i class="fas fa-plus"></i>
+                  </a> --}}
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th>Id</th>
+                      <th>Engine Name</th>
+                      <th>Dimension</th>
+                      <th>Output</th>
+                      <th>Price</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tfoot>
+                    <tr>
+                      <th>Id</th>
+                      <th>Engine Name</th>
+                      <th>Dimension</th>
+                      <th>Output</th>
+                      <th>Price</th>
+                      <th>Action</th>
+                    </tr>
+                  </tfoot>
+                  <tbody>
+                    @foreach($data as $dt)
+                    <tr>
+                      <td>
+                        @if($dt->id<=10)
+                          Lbr_0{{ $dt->id }}
+                        @else
+                          Lbr_{{ $dt->id }}
+                        @endif
+                      </td>
+                      <td>{{ $dt->name }}</td>
+                      <td>{{ $dt->dimension }}</td>
+                      <td>{{ $dt->output }}</td>
+                      <td>{{ $dt->price }}</td>
+                      <td><button data-toggle="modal" data-target="#logoutModal{{ $dt->id }}" class="btn btn-primary" type="button">
+                        <i class="fas fa-shopping-cart"></i>
+                      Buy
+                    </button>
+                    
+                  </td>
+                    </tr>
+                    @endforeach
+                    
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
 
         </div>
         <!-- /.container-fluid -->
@@ -154,26 +213,67 @@
   </a>
 
   <!-- Logout Modal-->
-  <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  @foreach($data as $dt)
+  <div class="modal fade" id="logoutModal{{ $dt->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+          <h5 class="modal-title" id="exampleModalLabel">Buy Item</h5>
           <button class="close" type="button" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">×</span>
           </button>
         </div>
-        <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+        <div class="modal-body">
+          <form action="{{ route('cust.buy') }}" method="post">
+            @csrf
+            
+            <div class="form-group">
+              <input name="name" type="text" class="form-control" value="{{ $dt->name }}" placeholder="Engine Name" readonly="">
+            </div>
+            <div class="row">
+            <div class="form-group" style="padding-left: 12px;">
+              <input name="val1" id="val{{ $dt->id }}" type="number" class="form-control" value="{{ $dt->price }}" hidden>
+              <input name="amount" id="vall{{ $dt->id }}" type="number" class="form-control" placeholder="Amount">
+              <input name="iditem" type="number" class="form-control" value="{{ $dt->id }}" hidden="">
+              <input name="idcust" type="number" class="form-control" value="{{ Auth::guard('customer')->user()->id }}" hidden="">
+            </div>
+            <div class="form-group" style="padding-left: 54px;">
+              <input name="price" id="sum{{ $dt->id }}" type="number" class="form-control" placeholder="Price" readonly="">
+            </div>
+            </div>
+             <div class="form-group">
+              <input name="date" type="date" class="form-control">
+
+            </div>
+            
+        </div>
         <div class="modal-footer">
           <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-          <a class="btn btn-primary" href="login.html">Logout</a>
+          <button class="btn btn-primary" type="submit">Buy</button>
+          </form>
         </div>
       </div>
     </div>
   </div>
+  @endforeach
+  <script
+  src="https://code.jquery.com/jquery-3.4.1.js"
+  integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+  crossorigin="anonymous"></script>
+  @foreach($data as $dt)
+  <script>
+    $(function(){
+            $('#val{{ $dt->id }}, #vall{{ $dt->id }}').keyup(function(){
+               var val1 = parseFloat($('#val{{ $dt->id }}').val()) || 0;
+               var val2 = parseFloat($('#vall{{ $dt->id }}').val()) || 0;
+               $('#sum{{ $dt->id }}').val(val1 * val2);
+            });
+         });
+  </script>
+  @endforeach
 
   <!-- Bootstrap core JavaScript-->
-  <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
+ <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
   <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
   <!-- Core plugin JavaScript-->
@@ -181,7 +281,12 @@
 
   <!-- Custom scripts for all pages-->
   <script src="{{ asset('js/sb-admin-2.min.js') }}"></script>
+  <script src="{{ asset('vendor/datatables/jquery.dataTables.min.js') }}"></script>
+  <script src="{{ asset('vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
 
+  <!-- Page level custom scripts -->
+  <script src="{{ asset('js/demo/datatables-demo.js') }}"></script>
+@include('sweetalert::alert')
 </body>
 
 </html>

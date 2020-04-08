@@ -7,6 +7,7 @@ use App\Admin;
 use App\Customer;
 use Auth;
 use Illuminate\Support\Facades\Hash;
+use Alert;
 
 class LoginController extends Controller
 {
@@ -18,9 +19,12 @@ class LoginController extends Controller
   public function postLogin(Request $request)
   {
     if (Auth::guard('admin')->attempt(['username' => $request->username, 'password' => $request->password])) {
+      toast('Welcome back!','success')->position('top-end')->autoClose(1500);
      return redirect()->intended('/admin');
 
    } else if (Auth::guard('customer')->attempt(['username' => $request->username, 'password' => $request->password])) {
+    // alert()->success('Hello',$request->username)->autoClose(1500);
+    toast('Welcome back!','success')->position('top-end')->autoClose(1500);
     return redirect()->intended('/dashboard');
 
   } else{
@@ -55,6 +59,7 @@ class LoginController extends Controller
   $user->password=Hash::make($request->password);
 
   $user->save();
-  return redirect('/');
+  // alert()->success('Success','registrasi berhasil')->autoClose(2000);
+  return redirect('/')->withSuccess('Task Created Successfully!');
   }
 }

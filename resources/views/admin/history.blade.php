@@ -147,7 +147,7 @@
                       <th>Price</th>
                       <th>Date</th>
                       <th>Status</th>
-                      <th>Action</th>
+                      {{-- <th>Action</th> --}}
                     </tr>
                   </thead>
                   <tfoot>
@@ -158,18 +158,36 @@
                       <th>Price</th>
                       <th>Date</th>
                       <th>Status</th>
-                      <th>Action</th>
+                      {{-- <th>Action</th> --}}
                     </tr>
                   </tfoot>
                   <tbody>
+                    @foreach($data as $dt)
                     <tr>
-                      <td>1</td>
-                      <td>Lbr_01</td>
-                      <td>3</td>
-                      <td>61.000</td>
-                      <td>2011/04/25</td>
-                      <td>Waiting</td>
-                      <td><button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <td>{{ $dt->id }}</td>
+                      <td>
+                        @if($dt->id_item<=10)
+                          Lbr_0{{ $dt->id_item }}
+                        @else
+                          Lbr_{{ $dt->id_item }}
+                        @endif
+                      </td>
+                      <td>{{ $dt->amount }}</td>
+                      <td>
+                        @php
+                          echo number_format($dt->price);
+                        @endphp
+                      </td>
+                      <td>@php
+                      $date=date_create($dt->date);
+                      echo date_format($date,"d/m/Y");
+                      // $datefor = $dt->date;
+                      // echo $datefor;
+                        //echo date_format($datefor,"d/m/Y");
+
+                      @endphp </td>
+                      <td>{{ $dt->status }}</td>
+                      {{-- <td><button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       Dropdown
                     </button>
                     <div class="dropdown-menu animated--fade-in" aria-labelledby="dropdownMenuButton">
@@ -177,8 +195,9 @@
                       <a class="dropdown-item" href="#">Decline</a>
                       
                     </div>
-                  </td>
+                  </td> --}}
                     </tr>
+                    @endforeach
                     
                   </tbody>
                 </table>
