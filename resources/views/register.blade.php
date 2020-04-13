@@ -39,7 +39,7 @@
                   <div class="text-center">
                     <h1 class="h4 text-gray-900 mb-4">REGISTER</h1>
                   </div>
-                  <form class="user" action="/regis" method="post">
+                  <form class="user" action="{{ route('register') }}" method="post">
                     @csrf
                     
                     <div class="form-group">

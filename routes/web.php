@@ -17,8 +17,8 @@ Route::get('/register', 'LoginController@getRegis')->name('regis')->middleware('
 Route::get('/', 'LoginController@getLogin')->name('login-page')->middleware('guest');
 Route::post('/login', 'LoginController@postLogin')->name('login');
 Route::get('/login', 'LoginController@getLogin')->middleware('guest');
-Route::post('/regis', 'LoginController@register');
-Route::get('/logout', 'LoginController@logout');
+Route::post('/regis', 'LoginController@register')->name('register');
+Route::get('/logout', 'LoginController@logout')->name('logout');
 
 Route::prefix('admin')->group(function () {
 	Route::get('/', 'AdminController@index')->name('admin.dashboard')
